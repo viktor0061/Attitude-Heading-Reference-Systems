@@ -95,7 +95,7 @@ gyroYaw = gyroYaw * rad2deg;
 
 %Complementary Filter(sensor fusion)
 %Calculates Euler angles in frame of reference
-ROTATE_GYRO = 0;
+ROTATE_GYRO = 1;
 Alpha = 0.98;
 Beta = 1 - Alpha;
 Roll = zeros(1,L);
@@ -109,13 +109,13 @@ rotatedGyroZ = zeros(1, L);
 if ROTATE_GYRO == 0
     for i = 1:L
        if i == 1
-           Roll(i) = Alpha * (gyroRollInitial - calibratedAngularX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
+           Roll(i) = Alpha * (gyroRollInitial + calibratedAngularX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
            Pitch(i) = Alpha * (gyroPitchInitial - calibratedAngularY(i) * rad2deg * delta_T) + Beta * accelPitch(i);
            Yaw(i) = Alpha * (gyroYawInitial - calibratedAngularZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
        else    
        Roll(i) =  Alpha * (Roll(i - 1) + calibratedAngularX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
        Pitch(i) = Alpha * (Pitch(i - 1) - calibratedAngularY(i) * rad2deg * delta_T) + Beta * accelPitch(i);
-       Yaw(i) = Alpha * (Yaw(i - 1) + calibratedAngularZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
+       Yaw(i) = Alpha * (Yaw(i - 1) - calibratedAngularZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
        end
     end
 end
@@ -136,11 +136,11 @@ if ROTATE_GYRO == 1
             rotatedGyroZ(i) = gyroRotated(3, 1);
             Roll(i) = Alpha * (gyroRollInitial - rotatedGyroX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
             Pitch(i) = Alpha * (gyroPitchInitial - rotatedGyroY(i) * rad2deg * delta_T) + Beta * accelPitch(i);
-            Yaw(i) = Alpha * (gyroYawInitial - rotatedGyroZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
+            Yaw(i) = Alpha * (gyroYawInitial + rotatedGyroZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
         else
-            Rz = [cos(Yaw(i - 1)), -sin(Yaw(i - 1)), 0; sin(Yaw(i - 1)), cos(Yaw(i - 1)), 0; 0, 0, 1];
-            Ry = [cos(Pitch(i - 1)), 0, -sin(Pitch(i - 1)); 0, 1, 0; sin(Pitch(i - 1)), 0, cos(Pitch(i - 1))];
-            Rx = [1, 0, 0; 0, cos(Roll(i - 1)), -sin(Roll(i - 1)); 0, sin(Roll(i - 1)), cos(Roll(i - 1))];
+            Rz = [cos(Yaw(i - 1) * deg2rad), -sin(Yaw(i - 1) * deg2rad), 0; sin(Yaw(i - 1) * deg2rad), cos(Yaw(i - 1) * deg2rad), 0; 0, 0, 1];
+            Ry = [cos(Pitch(i - 1) * deg2rad), 0, -sin(Pitch(i - 1) * deg2rad); 0, 1, 0; sin(Pitch(i - 1) * deg2rad), 0, cos(Pitch(i - 1) * deg2rad)];
+            Rx = [1, 0, 0; 0, cos(Roll(i - 1) * deg2rad), -sin(Roll(i - 1) * deg2rad); 0, sin(Roll(i - 1) * deg2rad), cos(Roll(i - 1) * deg2rad)];
             gyroRotated = Rz * gyroInstantaneous;
             gyroRotated = Ry * gyroRotated;
             gyroRotated = Rx * gyroRotated;
@@ -149,7 +149,7 @@ if ROTATE_GYRO == 1
             rotatedGyroZ(i) = gyroRotated(3, 1);
             Roll(i) =  Alpha * (Roll(i - 1) - rotatedGyroX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
             Pitch(i) = Alpha * (Pitch(i - 1) - rotatedGyroY(i) * rad2deg * delta_T) + Beta * accelPitch(i);
-            Yaw(i) = Alpha * (Yaw(i - 1) - rotatedGyroZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
+            Yaw(i) = Alpha * (Yaw(i - 1) + rotatedGyroZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
         end
     end
 end
@@ -158,13 +158,13 @@ rotatedGyroPitch = zeros(1, L);
 rotatedGyroYaw = zeros(1, L);
 for i = 1:L
     if i == 1
-        rotatedGyroRoll(i) = - rotatedGyroX(i) * delta_T;
-        rotatedGyroPitch(i) = - rotatedGyroY(i) * delta_T;
-        rotatedGyroYaw(i) = - rotatedGyroZ(i) * delta_T;
+        rotatedGyroRoll(i) = - rotatedGyroX(i) * delta_T * rad2deg;
+        rotatedGyroPitch(i) = - rotatedGyroY(i) * delta_T * rad2deg;
+        rotatedGyroYaw(i) = + rotatedGyroZ(i) * delta_T * rad2deg;
     else
-        rotatedGyroRoll(i) = rotatedGyroRoll(i - 1) - rotatedGyroX(i) * delta_T;
-        rotatedGyroPitch(i) = rotatedGyroPitch(i - 1) - rotatedGyroY(i) * delta_T;
-        rotatedGyroYaw(i) = rotatedGyroYaw(i - 1) - rotatedGyroZ(i) * delta_T;
+        rotatedGyroRoll(i) = rotatedGyroRoll(i - 1) - rotatedGyroX(i) * delta_T * rad2deg;
+        rotatedGyroPitch(i) = rotatedGyroPitch(i - 1) - rotatedGyroY(i) * delta_T * rad2deg;
+        rotatedGyroYaw(i) = rotatedGyroYaw(i - 1) + rotatedGyroZ(i) * delta_T * rad2deg;
     end
 end
 
