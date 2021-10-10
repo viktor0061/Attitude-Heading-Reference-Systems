@@ -7,4 +7,8 @@ Version 0.0.0<br>
    &ensp; &ensp; &nbsp; majd elvégzi azok fúzióját, miután a magnetometer adatait a gyorsulásmérőből számolt Roll és Pitch<br>
    &ensp; &ensp; &nbsp; szögek segítségével az inerciarendszerből a referencia rendszerbe transzformálta.<br>
    &ensp; &ensp; -Az Euler szögeket a referencia rendszerhez viszonyítva határozza meg.<br>
+   
+Version 0.0.1<br>
+ &ensp -Javítsa a bugot ami miatt hamis adatokat adott a CF a beforgatott gyro adatokkal, <br>
+ &ensp; &nbsp; radiánok és szögek közötti rossz átváltások miatt.<br>
   
