@@ -9,6 +9,6 @@ Version 0.0.0<br>
    &ensp; &ensp; -Az Euler szögeket a referencia rendszerhez viszonyítva határozza meg.<br>
    
 Version 0.0.1<br>
- &ensp -Javítsa a bugot ami miatt hamis adatokat adott a CF a beforgatott gyro adatokkal, <br>
+ &ensp; -Javítsa a bugot ami miatt hamis adatokat adott a CF a beforgatott gyro adatokkal, <br>
  &ensp; &nbsp; radiánok és szögek közötti rossz átváltások miatt.<br>
   
