@@ -11,4 +11,7 @@ Version 0.0.0<br>
 Version 0.0.1<br>
  &ensp; -Javítsa a bugot ami miatt hamis adatokat adott a CF a beforgatott gyro adatokkal, <br>
  &ensp; &nbsp; radiánok és szögek közötti rossz átváltások miatt.<br>
+ 
+Version 0.1.1<br>
+&ensp; -Implementálásra került egy funkció, ami folyamatossá teszi az atan2() függvények kimenetét.<br>
   
