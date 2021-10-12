@@ -71,6 +71,18 @@ transformedMagYaw = transformedMagYaw * rad2deg;
 transformedMagYawCal = 0;
 transformedMagYaw = transformedMagYaw - transformedMagYawCal;
 
+%Make the output of atan2 funcs continuous
+last = zeros(1, 3);
+for i = 2 : L
+   while transformedMagYaw(i) < last(1, 3) - 180 
+      transformedMagYaw(i) = transformedMagYaw(i) + 360;
+   end
+   while transformedMagYaw(i) > last(1, 3) + 180 
+      transformedMagYaw(i) = transformedMagYaw(i) - 360;
+   end
+   last(1, 3) = transformedMagYaw(i);
+end
+
 %Calculate angles from gyro w/ dead reackoning and convert from rad to deg
 gyroRoll = zeros(1, L);
 gyroPitch = zeros(1, L);
@@ -95,7 +107,7 @@ gyroYaw = gyroYaw * rad2deg;
 
 %Complementary Filter(sensor fusion)
 %Calculates Euler angles in frame of reference
-ROTATE_GYRO = 1;
+ROTATE_GYRO = 0;
 Alpha = 0.98;
 Beta = 1 - Alpha;
 Roll = zeros(1,L);
