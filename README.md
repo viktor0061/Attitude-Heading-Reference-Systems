@@ -11,4 +11,15 @@ Version 0.0.0<br>
 Version 0.0.1<br>
  &ensp; -Javítsa a bugot ami miatt hamis adatokat adott a CF a beforgatott gyro adatokkal, <br>
  &ensp; &nbsp; radiánok és szögek közötti rossz átváltások miatt.<br>
-  
+ 
+Version 0.1.1<br>
+&ensp; -Implementálásra került egy funkció, ami folyamatossá teszi az atan2() függvény kimenetét, amely a Yaw szög számításához szükséges.<br>
+
+Version 0.1.2<br>
+&ensp; -A következő hibák kerültek javításra:<br>
+&ensp; &ensp; -A giroszkóp adatok nem megfelelő forgatása a transzformációs mátrix rossz implementálása miatt.<br>
+&ensp; &ensp; -A Roll szögben fellépő késés a CF egyenleteiben lévő rossz előjel miatt.<br>
+&ensp; -Az aktuális verzió képes:<br>
+&ensp; &ensp; -A három Euler szög meghatározására a referencia rendszernek használt NED- és test koordináta rendszerek között.<br>
+&ensp; -Nem képes:<br>
+&ensp; &ensp; -90 fokos vagy annál nagyobb szögeket mérni a Roll és Pitch tengelyek mentén az atan2() függvények és a referenciának használt gravitáció vektor miatt.<br>
