@@ -81,6 +81,22 @@ for i = 2 : L
       transformedMagYaw(i) = transformedMagYaw(i) - 360;
    end
    last(1, 3) = transformedMagYaw(i);
+   
+%    while accelPitch(i) < last(1, 2) - 180 
+%       accelPitch(i) = accelPitch(i) + 360;
+%    end
+%    while accelPitch(i) > last(1, 3) + 180 
+%       accelPitch(i) = accelPitch(i) - 360;
+%    end
+%    last(1, 2) = accelPitch(i);
+%    
+%    while accelRoll(i) < last(1, 1) - 180 
+%       accelRoll(i) = accelRoll(i) + 360;
+%    end
+%    while accelRoll(i) > last(1, 1) + 180 
+%       accelRoll(i) = accelRoll(i) - 360;
+%    end
+%    last(1, 1) = accelRoll(i);
 end
 
 %Calculate angles from gyro w/ dead reackoning and convert from rad to deg
@@ -106,7 +122,7 @@ gyroPitch = gyroPitch * rad2deg;
 gyroYaw = gyroYaw * rad2deg;
 
 %Complementary Filter(sensor fusion)
-%Calculates Euler angles in frame of reference
+%Calculates Euler angles
 ROTATE_GYRO = 0;
 Alpha = 0.98;
 Beta = 1 - Alpha;
@@ -121,11 +137,11 @@ rotatedGyroZ = zeros(1, L);
 if ROTATE_GYRO == 0
     for i = 1:L
        if i == 1
-           Roll(i) = Alpha * (gyroRollInitial + calibratedAngularX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
+           Roll(i) = Alpha * (gyroRollInitial - calibratedAngularX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
            Pitch(i) = Alpha * (gyroPitchInitial - calibratedAngularY(i) * rad2deg * delta_T) + Beta * accelPitch(i);
            Yaw(i) = Alpha * (gyroYawInitial - calibratedAngularZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
        else    
-       Roll(i) =  Alpha * (Roll(i - 1) + calibratedAngularX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
+       Roll(i) =  Alpha * (Roll(i - 1) - calibratedAngularX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
        Pitch(i) = Alpha * (Pitch(i - 1) - calibratedAngularY(i) * rad2deg * delta_T) + Beta * accelPitch(i);
        Yaw(i) = Alpha * (Yaw(i - 1) - calibratedAngularZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
        end
@@ -137,31 +153,27 @@ if ROTATE_GYRO == 1
         gyroInstantaneous(2, 1) = calibratedAngularY(i);
         gyroInstantaneous(3, 1) = calibratedAngularZ(i);
         if i == 1
-            Rz = [cos(0), -sin(0), 0; sin(0), cos(0), 0; 0, 0, 1];
-            Ry = [cos(0), 0, -sin(0); 0, 1, 0; sin(0), 0, cos(0)];
-            Rx = [1, 0, 0; 0, cos(0), -sin(0); 0, sin(0), cos(0)];
-            gyroRotated = Rz * gyroInstantaneous;
-            gyroRotated = Ry * gyroRotated;
-            gyroRotated = Rx * gyroRotated;
+            Rr = [1 sin(0)*tan(0) cos(0)*tan(0);
+                               0 cos(0) -sin(0);
+                 0 sin(0)/cos(0) cos(0)/cos(0)];
+            gyroRotated = Rr * gyroInstantaneous;
             rotatedGyroX(i) = gyroRotated(1, 1);
             rotatedGyroY(i) = gyroRotated(2, 1);
             rotatedGyroZ(i) = gyroRotated(3, 1);
             Roll(i) = Alpha * (gyroRollInitial - rotatedGyroX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
             Pitch(i) = Alpha * (gyroPitchInitial - rotatedGyroY(i) * rad2deg * delta_T) + Beta * accelPitch(i);
-            Yaw(i) = Alpha * (gyroYawInitial + rotatedGyroZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
+            Yaw(i) = Alpha * (gyroYawInitial - rotatedGyroZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
         else
-            Rz = [cos(Yaw(i - 1) * deg2rad), -sin(Yaw(i - 1) * deg2rad), 0; sin(Yaw(i - 1) * deg2rad), cos(Yaw(i - 1) * deg2rad), 0; 0, 0, 1];
-            Ry = [cos(Pitch(i - 1) * deg2rad), 0, -sin(Pitch(i - 1) * deg2rad); 0, 1, 0; sin(Pitch(i - 1) * deg2rad), 0, cos(Pitch(i - 1) * deg2rad)];
-            Rx = [1, 0, 0; 0, cos(Roll(i - 1) * deg2rad), -sin(Roll(i - 1) * deg2rad); 0, sin(Roll(i - 1) * deg2rad), cos(Roll(i - 1) * deg2rad)];
-            gyroRotated = Rz * gyroInstantaneous;
-            gyroRotated = Ry * gyroRotated;
-            gyroRotated = Rx * gyroRotated;
+            Rr = [1 sin(Roll(i - 1) * deg2rad)*tan(Pitch(i - 1) * deg2rad) cos(Roll(i - 1) * deg2rad)*tan(Pitch(i - 1) * deg2rad);
+                                                                         0 cos(Roll(i - 1) * deg2rad) -sin(Roll(i - 1) * deg2rad);
+                 0 sin(Roll(i - 1) * deg2rad)/cos(Pitch(i - 1) * deg2rad) cos(Roll(i - 1) * deg2rad)/cos(Pitch(i - 1) * deg2rad)];
+            gyroRotated = Rr * gyroInstantaneous;
             rotatedGyroX(i) = gyroRotated(1, 1);
             rotatedGyroY(i) = gyroRotated(2, 1);
             rotatedGyroZ(i) = gyroRotated(3, 1);
             Roll(i) =  Alpha * (Roll(i - 1) - rotatedGyroX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
             Pitch(i) = Alpha * (Pitch(i - 1) - rotatedGyroY(i) * rad2deg * delta_T) + Beta * accelPitch(i);
-            Yaw(i) = Alpha * (Yaw(i - 1) + rotatedGyroZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
+            Yaw(i) = Alpha * (Yaw(i - 1) - rotatedGyroZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
         end
     end
 end
@@ -172,30 +184,13 @@ for i = 1:L
     if i == 1
         rotatedGyroRoll(i) = - rotatedGyroX(i) * delta_T * rad2deg;
         rotatedGyroPitch(i) = - rotatedGyroY(i) * delta_T * rad2deg;
-        rotatedGyroYaw(i) = + rotatedGyroZ(i) * delta_T * rad2deg;
+        rotatedGyroYaw(i) = - rotatedGyroZ(i) * delta_T * rad2deg;
     else
         rotatedGyroRoll(i) = rotatedGyroRoll(i - 1) - rotatedGyroX(i) * delta_T * rad2deg;
         rotatedGyroPitch(i) = rotatedGyroPitch(i - 1) - rotatedGyroY(i) * delta_T * rad2deg;
-        rotatedGyroYaw(i) = rotatedGyroYaw(i - 1) + rotatedGyroZ(i) * delta_T * rad2deg;
+        rotatedGyroYaw(i) = rotatedGyroYaw(i - 1) - rotatedGyroZ(i) * delta_T * rad2deg;
     end
 end
-
-% for i = 1 : L
-%     rotatedMagX(i) = magX(i) * cos(Pitch(i) * deg2rad) + magZ(i) * sin(Pitch(i)  * deg2rad);
-%     rotatedMagY(i) = magY(i) * cos(Roll(i) * deg2rad) + magX(i) * sin(Roll(i) * deg2rad) * sin(Pitch(i) * deg2rad) - magZ(i) * sin(Roll(i) * deg2rad) * cos(Pitch(i) * deg2rad);
-%     rotatedMagZ(i) = magY(i) * sin(Roll(i) * deg2rad) - magX(i) * sin(Pitch(i) * deg2rad) * cos(Roll(i) * deg2rad) + magZ(i) * cos(Pitch(i) * deg2rad) * cos(Roll(i) * deg2rad);
-% end
-% transformedMagYaw = atan2(rotatedMagY, rotatedMagX);
-% transformedMagYaw = transformedMagYaw * rad2deg;
-% gyroYawInitial = sum(transformedMagYaw(1:300)) / 300;
-% for i = 1:L
-%    if i == 1 
-%        Yaw(i) = Alpha * (gyroYawInitial - angularZ(i) * delta_T) + Beta * transformedMagYaw(i);
-%    else
-%        Yaw(i) = Alpha * (Yaw(i - 1) + angularZ(i) * delta_T) + Beta * transformedMagYaw(i);
-%    end
-% end
-
 %Rotate magnetic readings with the output of CF
 % CFrotatedMagX = zeros(1, L);
 % CFrotatedMagY = zeros(1, L);
@@ -237,9 +232,9 @@ subplot(1, 3, 2), plot(time, magY(1:L)), grid, title("Magnetic Field Y")
 subplot(1, 3, 3), plot(time, magZ(1:L)), grid, title("Magnetic Field Z")
 figure(2)
 subplot()
-subplot(1, 3, 1), plot(time, calibratedAngularX(1:L), time, rotatedGyroX), grid, title("Angular Velocity X"), legend("GyroX", "EulerRateX")
-subplot(1, 3, 2), plot(time, calibratedAngularY(1:L), time, rotatedGyroY), grid, title("Angular Velocity Y"), legend("GyroY", "EulerRateY")
-subplot(1, 3, 3), plot(time, calibratedAngularZ(1:L), time, rotatedGyroZ), grid, title("Angular Velocity Z"), legend("GyroZ", "EulerRateZ")
+subplot(1, 3, 1), plot(time, calibratedAngularX(1:L), "red", time, rotatedGyroX, "green"), grid, title("Angular Velocity X"), legend("GyroX", "EulerRateX")
+subplot(1, 3, 2), plot(time, calibratedAngularY(1:L), "red", time, rotatedGyroY, "green"), grid, title("Angular Velocity Y"), legend("GyroY", "EulerRateY")
+subplot(1, 3, 3), plot(time, calibratedAngularZ(1:L), "red", time, rotatedGyroZ, "green"), grid, title("Angular Velocity Z"), legend("GyroZ", "EulerRateZ")
 figure(1)
 subplot(1, 3, 1), plot(time, calibratedAccelX(1:L)), grid, title("Acceleration X")
 subplot(1, 3, 2), plot(time, calibratedAccelY(1:L)), grid, title("Acceleration Y")
