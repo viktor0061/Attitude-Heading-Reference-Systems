@@ -23,3 +23,11 @@ Version 0.1.2<br>
 &ensp; &ensp; -A három Euler szög meghatározására a referencia rendszernek használt NED- és test koordináta rendszerek között.<br>
 &ensp; -Nem képes:<br>
 &ensp; &ensp; -90 fokos vagy annál nagyobb szögeket mérni a Roll és Pitch tengelyek mentén az atan2() függvények és a referenciának használt gravitáció vektor miatt.<br>
+Version 1.0.0<br>
+&ensp; -Implementálásra került egy módszer, amivel meghatározható a gyorsulásmérő Z - tengely menti offsetje.<br>
+&ensp; -Javításra került egy hiba, az eCompass egyenleteinek rossz implementálása miatt -a nevezőben nem jelentek meg a vektor összegek-.<br>
+&ensp; -Trigonometrikus és algebrai egyenletek helyett az eCompass a vektor forgatást már mátrix egyenletekkel végzi.<br>
+&ensp; -Eltávolítottam a funkciót, ami a giroszkóp mérések adatait transzformálja rekúrzívan -szükségtelennek ítéltem-.<br>
+&ensp; -Implementálásra került egy szűrés a gyorsulás adatokon, amelyeket a pozíció számításhoz használ fel az algoritmus -dead reckoninggal-.<br>
+&ensp; -Továbbá bekerült egy funkció, amely a szűrt adatokat transzformálja REF/NED rendszerbe és kétszeresen integrálja.<br>
+&ensp; -Változtatások történtek továbbá az adatok megjelenítésénél is.<br>
