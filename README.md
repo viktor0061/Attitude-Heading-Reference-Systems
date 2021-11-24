@@ -1,4 +1,4 @@
-# VTS-Thesis---Attitude and Heading Reference Systems(AHRS)<br>
+# VTS-Thesis - Attitude and Heading Reference Systems(AHRS)<br>
 A kód október 8-ai állapotától kezdve történik a verziószámozás<br>
 Version 0.0.0<br>
  &ensp; Az algoritmus a bevitt adatokból:<br>
