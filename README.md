@@ -41,8 +41,9 @@ Version 0.0.0<br>
    &ensp; &ensp; -Calibrates the X and Y axles of the acceletormeter and the X,Y,Z axles of the gyroscope.<br>
    &ensp; &ensp; -Calculates the attitude/tilt(Pitch&Roll) based on gyro and accelerometer, separately<br>
    &ensp; &ensp; -Transforms the magnetometer measurements from bodyframe to reference frame, w/ accelerometer tilt<br>
-   &ensp; &ensp; -Calculates heading/yaw from the transformed magnetometer data tilt<br>
-   &ensp; &ensp; -Performs sensorfusion on the filtered attitude and heading data from the gyroscope, accelerometer & magnetometer (Complementary Filter)<br>
+   &ensp; &ensp; -Calculates heading/yaw from the transformed magnetometer data<br>
+   &ensp; &ensp; -Performs sensorfusion on the filtered attitude and heading data<br>
+   &ensp; &ensp; &nbsp; from the gyroscope, accelerometer & magnetometer data (Complementary Filter)<br>
    &ensp; &ensp; -Thus provides attitude and heading information in Euler angles.<br>
    
 Version 0.0.1<br>
@@ -50,7 +51,7 @@ Version 0.0.1<br>
  &ensp; &nbsp; due to the wrong use of degrees and radians.<br>
  
 Version 0.1.1<br>
-&ensp; -Implements a feature which makes the output of the magHeading continuous.<br>
+&ensp; -Implements a feature which makes the output of the magYaw continuous.<br>
 
 Version 0.1.2<br>
 &ensp; -The next bugs have been fixed:<br>
@@ -66,7 +67,7 @@ Version 1.0.0<br>
 &ensp; &ensp;that only small degrees could be calculated with accuracy-.<br>
 &ensp; -Algebraic equations have been replaced with matrix equations.<br>
 &ensp; -Removed the possible transformation of gyroscope data -It have been deemed unnecessary-.<br>
-&ensp; -Implemented a filter for accelerometer, used to calculate position.<br>
+&ensp; -Implemented a filter for accelerometer data, used to calculate position.<br>
 &ensp; -Implemented a function that transform the filtered accelerometer data and performm double integration.<br>
 &ensp; -Changes have been made in the visualization of the data.<br>
 
