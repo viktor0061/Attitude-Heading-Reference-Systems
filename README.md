@@ -1,4 +1,4 @@
-#Attitude Heading Reference Systems(AHRS)<br>
+# Attitude Heading Reference Systems(AHRS)<br>
 This repository contains my algorithm based on the research I made in the field of AHRSs for my school project as an Electrical and Electronics Engineer(BSc) student at Subotica Tech - College of Applied Sciences with the support of prof. Dr. Silvester Pletl, and as a scholarship student at ELTE Márton Áron Special College(funders), and which research earned me a section first place at the 20th Hungarian Students Scientific Conference, in Vojvodina.<br><br>
 
 Hungarian<br>
