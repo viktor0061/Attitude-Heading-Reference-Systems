@@ -72,4 +72,7 @@ Version 1.0.0<br>
 &ensp; -Implemented a filter for accelerometer data, used to calculate position.<br>
 &ensp; -Implemented a function that transform the filtered accelerometer data and performm double integration.<br>
 &ensp; -Changes have been made in the visualization of the data.<br>
+Version 1.1.0
+&ensp; -Added a module that simulates sensor data for the validation of the AHRS algorithm<br>
+&ensp; -Implemented the said module to the AHRS algorithm<br>
 
