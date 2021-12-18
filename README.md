@@ -35,8 +35,8 @@ Version 1.0.0<br>
 &ensp; -Továbbá bekerült egy funkció, amely a szűrt adatokat transzformálja REF/NED rendszerbe és kétszeresen integrálja.<br>
 &ensp; -Változtatások történtek továbbá az adatok megjelenítésénél is.<br>
 Version 1.1.0<br>
-&ensp -Hozzáadásra került egy modul, amely szenzor adatokat szimulál az AHRS algoritmus validálásának céljából.<br>
-&ensp -Implementálásra került az említett modul az AHRS algoritmusba.<br>
+&ensp; -Hozzáadásra került egy modul, amely szenzor adatokat szimulál az AHRS algoritmus validálásának céljából.<br>
+&ensp; -Implementálásra került az említett modul az AHRS algoritmusba.<br>
 <br><br><br><br>
 
 English<br>
@@ -75,7 +75,7 @@ Version 1.0.0<br>
 &ensp; -Implemented a filter for accelerometer data, used to calculate position.<br>
 &ensp; -Implemented a function that transform the filtered accelerometer data and performm double integration.<br>
 &ensp; -Changes have been made in the visualization of the data.<br>
-Version 1.1.0
+Version 1.1.0<br>
 &ensp; -Added a module that simulates sensor data for the validation of the AHRS algorithm.<br>
 &ensp; -Implemented the said module to the AHRS algorithm.<br>
 
