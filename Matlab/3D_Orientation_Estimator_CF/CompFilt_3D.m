@@ -1,9 +1,18 @@
 close all
 format long
+%Flags
+TEST = 1;
+POS_OBSERVER = 0;
+DO_CALIBRATION = 1;
 %transform data so we can process it
-Accel = table2array(Acceleration);
-AngVel = table2array(AngularVelocity);
-MagField = table2array(MagneticField);
+if TEST == 0
+    Accel = table2array(Acceleration);
+    AngVel = table2array(AngularVelocity);
+    MagField = table2array(MagneticField);
+end
+if TEST
+    AHRS_Simulation_Data_Generation
+end
 
 accelX = Accel(:, 1);
 accelY = Accel(:, 2);
@@ -17,13 +26,12 @@ magX = MagField(:, 1);
 magY = MagField(:, 2);
 magZ = MagField(:, 3);
 %Calibration
-DO_CALIBRATION = 1;
 if DO_CALIBRATION
     CalSamples = 200;
     CalibrationAx = sum(accelX(1:CalSamples)) / CalSamples;
     CalibrationAy = sum(accelY(1:CalSamples)) / CalSamples;
     CalibrationAz = sum(accelZ(1:CalSamples) - 9.81) / CalSamples;
-%     CalibrationAz = 0;
+%     CalibrationAz = 0;        
     CalibrationGx = sum(angularX(1:CalSamples)) / CalSamples;
     CalibrationGy = sum(angularY(1:CalSamples)) / CalSamples;
     CalibrationGz = sum(angularZ(1:CalSamples)) / CalSamples;
@@ -147,28 +155,35 @@ bodyAccel = zeros(3, 1);
 partialRefAccel = zeros(3, 1);
 partialRefVelocity= zeros(3, 1);
 partialRefPosition= zeros(3, 1);
-filteredAccelX = conv(Num3, calibratedAccelX);
-filteredAccelY = conv(Num3, calibratedAccelY);
-filteredAccelZ = conv(Num3, calibratedAccelZ);
+if POS_OBSERVER
+    filteredAccelX = conv(Num3, calibratedAccelX);
+    filteredAccelY = conv(Num3, calibratedAccelY);
+    filteredAccelZ = conv(Num3, calibratedAccelZ);
+end
+if POS_OBSERVER == 0
+    filteredAccelX = zeros(1, L);
+    filteredAccelY = zeros(1, L);
+    filteredAccelZ = zeros(1, L);
+end
 L2 = length(filteredAccelX);
 time2 = 0 :delta_T: (L2 - 1) * delta_T;
 refAccel = zeros(3, L2);
 refVelocity= zeros(3, L2);
 refPosition= zeros(3, L2);
 for i = 1 : L
-   %The signs of the sinus functions in Ry and Rx was inverted -compared to the basic,
-   %right handed rotation matrices- because of the not usual
-   %coordinate systems and signs of the phone IMU and the code
-   Rx = [1, 0, 0; 
-        0, cos(Roll(i) * deg2rad), sin(Roll(i) * deg2rad);
-        0, -sin(Roll(i) * deg2rad), cos(Roll(i) * deg2rad)];
-   Ry = [cos(Pitch(i) * deg2rad), 0, -sin(Pitch(i) * deg2rad);
-        0, 1, 0;
-        sin(Pitch(i) * deg2rad), 0, cos(Pitch(i) * deg2rad)];
-   Rz = [cos(Yaw(i) * deg2rad), -sin(Yaw(i) * deg2rad), 0;
-        sin(Yaw(i) * deg2rad), cos(Yaw(i) * deg2rad), 0;
-        0, 0, 1];
-   R = Rz * Ry * Rx;
+%The signs of the sinus functions in Ry and Rx was inverted -compared to the basic,
+%right handed rotation matrices- because of the not usual
+%coordinate systems and signs of the phone IMU and the code
+Rx = [1, 0, 0; 
+    0, cos(Roll(i) * deg2rad), sin(Roll(i) * deg2rad);
+    0, -sin(Roll(i) * deg2rad), cos(Roll(i) * deg2rad)];
+Ry = [cos(Pitch(i) * deg2rad), 0, -sin(Pitch(i) * deg2rad);
+    0, 1, 0;
+    sin(Pitch(i) * deg2rad), 0, cos(Pitch(i) * deg2rad)];
+Rz = [cos(Yaw(i) * deg2rad), -sin(Yaw(i) * deg2rad), 0;
+    sin(Yaw(i) * deg2rad), cos(Yaw(i) * deg2rad), 0;
+    0, 0, 1];
+R = Rz * Ry * Rx;
 %    Rx = [1, 0, 0; 
 %         0, cos(Roll(i) * deg2rad), -sin(Roll(i) * deg2rad);
 %         0, sin(Roll(i) * deg2rad), cos(Roll(i) * deg2rad)];
@@ -176,23 +191,23 @@ for i = 1 : L
 %         0, 1, 0;
 %         -sin(Pitch(i) * deg2rad), 0, cos(Pitch(i) * deg2rad)];
 %    bodyGravity = Rx * Ry * Rz * [0; 0; 9.81];
-   bodyAccel = [filteredAccelX(i); filteredAccelY(i); filteredAccelZ(i)];% - bodyGravity;
-   partialRefAccel = R * bodyAccel;
-   %Calculate displacement w/ deadreackoning
-   partialRefVelocity = partialRefVelocity + partialRefAccel * delta_T;
-   partialRefPosistion = partialRefPosition + partialRefVelocity * delta_T;
-   
-   refAccel(1, i) = partialRefAccel(1, 1);
-   refAccel(2, i) = partialRefAccel(2, 1);
-   refAccel(3, i) = partialRefAccel(3, 1);
-   
-   refVelocity(1, i) = partialRefVelocity(1, 1);
-   refVelocity(2, i) = partialRefVelocity(2, 1);
-   refVelocity(3, i) = partialRefVelocity(3, 1);
-   
-   refPosition(1, i) = partialRefPosition(1, 1);
-   refPosition(2, i) = partialRefPosition(2, 1);
-   refPosition(3, i) = partialRefPosition(3, 1);
+bodyAccel = [filteredAccelX(i); filteredAccelY(i); filteredAccelZ(i)];% - bodyGravity;
+partialRefAccel = R * bodyAccel;
+%Calculate displacement w/ deadreackoning
+partialRefVelocity = partialRefVelocity + partialRefAccel * delta_T;
+partialRefPosistion = partialRefPosition + partialRefVelocity * delta_T;
+
+refAccel(1, i) = partialRefAccel(1, 1);
+refAccel(2, i) = partialRefAccel(2, 1);
+refAccel(3, i) = partialRefAccel(3, 1);
+
+refVelocity(1, i) = partialRefVelocity(1, 1);
+refVelocity(2, i) = partialRefVelocity(2, 1);
+refVelocity(3, i) = partialRefVelocity(3, 1);
+
+refPosition(1, i) = partialRefPosition(1, 1);
+refPosition(2, i) = partialRefPosition(2, 1);
+refPosition(3, i) = partialRefPosition(3, 1);
 end
 
 %Plot the results

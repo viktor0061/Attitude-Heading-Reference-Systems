@@ -1,0 +1,101 @@
+close all
+delta_T = 7e-3;
+L = 1300;
+time = 0 : delta_T : (L - 1) * delta_T;
+
+%Generate Euler angles
+testRoll = zeros(1,L);
+testPitch = zeros(1,L);
+testYaw = zeros(1,L); %[rad]
+testRoll(1 : round(((1/3)*L - 2))) = pi/3 * sin(2*pi*0.333*time(1 : round(((1/3)*L - 2))));
+testRoll(round(((1/3)*L - 2) : L)) = 0;
+testPitch(1 : round(((1/3)*L - 3))) = 0;
+testPitch(round((1/3)*L - 3) : round((2/3)*L - 8)) = pi/3 * sin(2*pi*0.333*time(round((1/3)*L - 3) : round((2/3)*L - 8)));
+testYaw(1 : round((2/3)*L)) = 0;
+testYaw(round((2/3)*L - 8) : L) = pi/3 * sin(2*pi*0.333*time(round((2/3)*L - 8) : L));
+
+%Differentiate angles
+AngVel = zeros(3, L); %[rad/s]
+for i = 2:L
+    AngVel(1, i) = (testRoll(i) - testRoll(i - 1))/delta_T;
+    AngVel(2, i) = (testPitch(i) - testPitch(i - 1))/delta_T;
+    AngVel(3, i) = (testYaw(i) - testYaw(i - 1))/delta_T;
+end
+AngVel = transpose(AngVel);
+
+%Generate magnetic and gravity vector
+RefGravitationalField = [0; 0; 9.81]; %[m/s2]
+RefMagneticField = [22.76; 0; 40.72]; % [uT] / Data based on the magnetic field calculator of the
+                                    %National Centers for Envireomental Information
+                                    %National Oceanic and Atmospheric Administration
+                                    %Lat :45.614922 Long: 20.035061 [deg] SeaLvL : 77[m]
+
+%Transform field vectors
+BodyGravity = zeros(L, 3);
+BodyMagField = zeros(L, 3);
+for i = 1 : L
+   Rx = [1 0 0; 0 cos(testRoll(i)) -sin(testRoll(i)); 0 sin(testRoll(i)), cos(testRoll(i))];
+   Ry = [cos(testPitch(i)) 0 sin(testPitch(i)); 0 1 0; -sin(testPitch(i)) 0 cos(testPitch(i))];
+   Rz = [cos(testYaw(i)) -sin(testYaw(i)) 0; sin(testYaw(i)) cos(testYaw(i)) 0; 0 0 1];
+   R = Rx * Ry * Rz;
+   partCalcBodyGravity = R * RefGravitationalField;
+   partCalcBodyMagField = R * RefMagneticField;
+   BodyGravity(i, 1) = partCalcBodyGravity(1, 1);
+   BodyGravity(i, 2) = partCalcBodyGravity(2, 1);
+   BodyGravity(i, 3) = partCalcBodyGravity(3, 1);
+   BodyMagField(i, 1) = partCalcBodyMagField(1, 1);
+   BodyMagField(i, 2) = partCalcBodyMagField(2, 1);
+   BodyMagField(i, 3) = partCalcBodyMagField(3, 1);
+end
+
+%Generate and add measurement noise
+whiteNoise = 0.15 * wgn(L, 9, 0.2);
+AngVel = AngVel + whiteNoise(:, 1:3);
+Accel = BodyGravity + whiteNoise(:, 4:6);
+MagField = BodyMagField + whiteNoise(:, 7:9);
+
+figure(21)
+hold on
+plot(time, BodyMagField(:, 1), '-', 'Color', 'blue')
+plot(time, BodyMagField(:, 2), '--', 'Color', 'red')
+plot(time, BodyMagField(:, 3), '-.', 'Color', 'black')
+grid, legend('X - body frame axis', 'Y - body frame axis', 'Z - body frame axis')
+figure(22)
+hold on
+plot(time, BodyGravity(:, 1), '-', 'Color', 'blue')
+plot(time, BodyGravity(:, 2), '--', 'Color', 'red')
+plot(time, BodyGravity(:, 3), '-.', 'Color', 'black')
+grid, legend('X - body frame axis', 'Y - body frame axis', 'Z - body frame axis')
+figure(23)
+hold on
+plot(time, testYaw, 'Color', 'green')
+plot(time, AngVel(:, 3), '-.', 'Color', 'magenta')
+grid, legend('Yaw', 'dYaw')
+figure(24)
+hold on
+plot(time, testPitch, 'Color', 'red')
+plot(time, AngVel(:, 2), '-.', 'Color', 'black')
+grid, legend('Pitch', 'dPitch')
+figure(25)
+hold on
+plot(time, testRoll, 'Color', 'blue')
+plot(time, AngVel(:, 1), '-.', 'Color', 'black')
+grid, legend('Roll', 'dRoll')
+figure(26)
+title('Simulated Accelerometer Data'), hold on
+plot(time, Accel(:, 1), '-', 'Color', 'blue')
+plot(time, Accel(:, 2), '--', 'Color', 'red')
+plot(time, Accel(:, 3), '-.', 'Color', 'black')
+grid, legend('X - body frame axis', 'Y - body frame axis', 'Z - body frame axis')
+figure(27)
+title('Simulated Magnetometer Data'), hold on
+plot(time, MagField(:, 1), '-', 'Color', 'blue')
+plot(time, MagField(:, 2), '--', 'Color', 'red')
+plot(time, MagField(:, 3), '-.', 'Color', 'black')
+grid, legend('X - body frame axis', 'Y - body frame axis', 'Z - body frame axis')
+figure(28)
+title('Simulated Gyroscope Data'), hold on
+plot(time, AngVel(:, 1), '-', 'Color', 'blue')
+plot(time, AngVel(:, 2), '--', 'Color', 'red')
+plot(time, AngVel(:, 3), '-.', 'Color', 'black')
+grid, legend('X - body frame axis', 'Y - body frame axis', 'Z - body frame axis')
