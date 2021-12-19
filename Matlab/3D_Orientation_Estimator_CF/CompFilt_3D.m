@@ -137,13 +137,13 @@ Pitch = zeros(1,L);
 Yaw = zeros(1,L);
 for i = 1:L
    if i == 1
-       Roll(i) = Alpha * (gyroRollInitial - calibratedAngularX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
-       Pitch(i) = Alpha * (gyroPitchInitial - calibratedAngularY(i) * rad2deg * delta_T) + Beta * accelPitch(i);
-       Yaw(i) = Alpha * (gyroYawInitial - calibratedAngularZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
+       Roll(i) = Alpha * (gyroRollInitial + calibratedAngularX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
+       Pitch(i) = Alpha * (gyroPitchInitial + calibratedAngularY(i) * rad2deg * delta_T) + Beta * accelPitch(i);
+       Yaw(i) = Alpha * (gyroYawInitial + calibratedAngularZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
    else    
-       Roll(i) =  Alpha * (Roll(i - 1) - calibratedAngularX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
-       Pitch(i) = Alpha * (Pitch(i - 1) - calibratedAngularY(i) * rad2deg * delta_T) + Beta * accelPitch(i);
-       Yaw(i) = Alpha * (Yaw(i - 1) - calibratedAngularZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
+       Roll(i) =  Alpha * (Roll(i - 1) + calibratedAngularX(i) * rad2deg * delta_T) + Beta * accelRoll(i);
+       Pitch(i) = Alpha * (Pitch(i - 1) + calibratedAngularY(i) * rad2deg * delta_T) + Beta * accelPitch(i);
+       Yaw(i) = Alpha * (Yaw(i - 1) + calibratedAngularZ(i) * rad2deg * delta_T) + Beta * transformedMagYaw(i);
    end
 end
 rotatedGyroRoll = zeros(1, L);
