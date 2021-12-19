@@ -37,6 +37,9 @@ Version 1.0.0<br>
 Version 1.1.0<br>
 &ensp; -Hozzáadásra került egy modul, amely szenzor adatokat szimulál az AHRS algoritmus validálásának céljából.<br>
 &ensp; -Implementálásra került az említett modul az AHRS algoritmusba.<br>
+Version 1.1.1<br>
+&ensp; -A hotfix kalibrációs időt ad hozzá a generált teszt adatokhoz és megváltoztatja azok frekvenciáját.<br>
+&ensp; -Továbbá, kijavítja a késést a becslésekben, a CF előjeleinek ideiglenes megváltoztatásával.<br>
 <br><br><br><br>
 
 English<br>
@@ -78,4 +81,8 @@ Version 1.0.0<br>
 Version 1.1.0<br>
 &ensp; -Added a module that simulates sensor data for the validation of the AHRS algorithm.<br>
 &ensp; -Implemented the said module to the AHRS algorithm.<br>
+Version 1.1.1<br>
+&ensp; -The hotfix implements a calibration time in test data generation<br>
+&ensp; &ensp; and changes the frequency of the signal.<br>
+&ensp; -Resolves the time delay by changing the CF signs, temporarly.
 
