@@ -51,48 +51,48 @@ AngVel = AngVel + whiteNoise(:, 1:3);
 Accel = BodyGravity + whiteNoise(:, 4:6);
 MagField = BodyMagField + whiteNoise(:, 7:9);
 
-% figure(21)
+% figure
 % hold on
 % title('Magnetic Field in Body Frame')
 % plot(time, BodyMagField(:, 1), '-', 'Color', 'blue')
 % plot(time, BodyMagField(:, 2), '--', 'Color', 'red')
 % plot(time, BodyMagField(:, 3), '-.', 'Color', 'black')
 % grid, legend('X - body frame axis', 'Y - body frame axis', 'Z - body frame axis')
-% figure(22)
+% figure
 % hold on
 % title('Gravitational Field in Body Frame')
 % plot(time, BodyGravity(:, 1), '-', 'Color', 'blue')
 % plot(time, BodyGravity(:, 2), '--', 'Color', 'red')
 % plot(time, BodyGravity(:, 3), '-.', 'Color', 'black')
 % grid, legend('X - body frame axis', 'Y - body frame axis', 'Z - body frame axis')
-% figure(23)
+% figure
 % hold on
 % plot(time, testYaw, 'Color', 'green')
 % plot(time, AngVel(:, 3), '-.', 'Color', 'magenta')
 % grid, legend('Yaw', 'dYaw')
-% figure(24)
+% figure
 % hold on
 % plot(time, testPitch, 'Color', 'red')
 % plot(time, AngVel(:, 2), '-.', 'Color', 'black')
 % grid, legend('Pitch', 'dPitch')
-% figure(25)
+% figure
 % hold on
 % plot(time, testRoll, 'Color', 'blue')
 % plot(time, AngVel(:, 1), '-.', 'Color', 'black')
 % grid, legend('Roll', 'dRoll')
-% figure(26)
+% figure
 % title('Simulated Accelerometer Data'), hold on
 % plot(time, Accel(:, 1), '-', 'Color', 'blue')
 % plot(time, Accel(:, 2), '--', 'Color', 'red')
 % plot(time, Accel(:, 3), '-.', 'Color', 'black')
 % grid, legend('X - body frame axis', 'Y - body frame axis', 'Z - body frame axis')
-% figure(27)
+% figure
 % title('Simulated Magnetometer Data'), hold on
 % plot(time, MagField(:, 1), '-', 'Color', 'blue')
 % plot(time, MagField(:, 2), '--', 'Color', 'red')
 % plot(time, MagField(:, 3), '-.', 'Color', 'black')
 % grid, legend('X - body frame axis', 'Y - body frame axis', 'Z - body frame axis')
-% figure(28)
+% figure
 % title('Simulated Gyroscope Data'), hold on
 % plot(time, AngVel(:, 1), '-', 'Color', 'blue')
 % plot(time, AngVel(:, 2), '--', 'Color', 'red')

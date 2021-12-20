@@ -53,6 +53,9 @@ calibratedAngularZ = angularZ - CalibrationGz;
 %Define constants and time vector
 delta_T = 7e-3;
 L = length(angularX) - 1;
+if TEST
+   L = length(angularX);
+end
 time = 0 : delta_T : (L - 1) * delta_T;
 rad2deg = 57.29578;
 deg2rad = 0.0174532925;
@@ -115,13 +118,13 @@ gyroPitchInitial = sum(accelPitch(1:300)) / 300;
 gyroYawInitial = sum(transformedMagYaw(1:300)) / 300;
 for i = 1:L
     if i == 1
-        gyroRoll(i) = -calibratedAngularX(i) * delta_T;
-        gyroPitch(i) = - calibratedAngularY(i) * delta_T;
-        gyroYaw(i) = -calibratedAngularZ(i) * delta_T;
+        gyroRoll(i) = +calibratedAngularX(i) * delta_T;
+        gyroPitch(i) = + calibratedAngularY(i) * delta_T;
+        gyroYaw(i) = +calibratedAngularZ(i) * delta_T;
     else
-        gyroRoll(i) = gyroRoll(i - 1) - calibratedAngularX(i) * delta_T;
-        gyroPitch(i) = gyroPitch(i - 1) - calibratedAngularY(i) * delta_T;
-        gyroYaw(i) = gyroYaw(i - 1) - (calibratedAngularZ(i) * delta_T);
+        gyroRoll(i) = gyroRoll(i - 1) + calibratedAngularX(i) * delta_T;
+        gyroPitch(i) = gyroPitch(i - 1) + calibratedAngularY(i) * delta_T;
+        gyroYaw(i) = gyroYaw(i - 1) + (calibratedAngularZ(i) * delta_T);
     end
 end
 gyroRoll = gyroRoll * rad2deg;
@@ -209,46 +212,59 @@ refPosition(1, i) = partialRefPosition(1, 1);
 refPosition(2, i) = partialRefPosition(2, 1);
 refPosition(3, i) = partialRefPosition(3, 1);
 end
+if TEST
+   testRoll = testRoll * rad2deg;
+   testPitch = testPitch * rad2deg;
+   testYaw = testYaw * rad2deg;
+   errorRateRoll = (-testRoll + Roll)./testRoll;
+   errorRatePitch= (-testPitch + Pitch)./testPitch;
+   errorRateYaw= (-testYaw + Yaw)./testYaw;
+end
 
 %Plot the results
-figure(9)
-subplot(1, 3, 1), plot(time, Roll(1:L), "red", time, accelRoll(1:L), "green", time, gyroRoll(1:L), "blue"), legend("Roll", "Accel Roll", "Gyro Roll"), title("Roll"), grid
-subplot(1, 3, 2), plot(time, Pitch(1:L), "red", time, accelPitch(1:L), "green", time, gyroPitch(1:L), "blue"), legend("Pitch", "Accel Pitch", "Gyro Pitch"), title("Pitch"), grid
-subplot(1, 3, 3), plot(time, Yaw(1:L), "red", time, transformedMagYaw(1:L), "green", time, gyroYaw(1:L), "blue"), legend("Yaw", "Mag Yaw", "Gyro Yaw"), title("Yaw"), grid
-figure(8)
-subplot(1, 3, 1), plot(time2, refAccel(1, 1:L2)), grid, title("Accel x in reference frame")
-subplot(1, 3, 2), plot(time2, refAccel(2, 1:L2)), grid, title("Accel y in reference frame")
-subplot(1, 3, 3), plot(time2, refAccel(3, 1:L2)), grid, title("Accel z in reference frame")
-figure(6)
-subplot(1, 3, 1), plot(time, Roll(1:L)), grid, title("Roll")
-subplot(1, 3, 2), plot(time, Pitch(1:L)), grid, title("Pitch")
-subplot(1, 3, 3), plot(time, Yaw(1:L)), grid, title("Yaw")
-figure(5)
-subplot(1, 3, 1), plot(time, gyroRoll(1:L)), grid, title("Gyro Roll"), legend("Gyro Roll")
-subplot(1, 3, 2), plot(time, gyroPitch(1:L)), grid, title("Gyro Pitch"), legend("Gyro Pitch")
-subplot(1, 3, 3), plot(time, gyroYaw(1:L)), grid, title("Gyro Yaw"), legend("Gyro Yaw")
-figure(4)
-subplot(1, 3, 1), plot(time, accelRoll(1:L)), grid, title("Inclination X")
-subplot(1, 3, 2), plot(time, accelPitch(1:L)), grid, title("Inclination Y")
-subplot(1, 3, 3), plot(time, magYaw(1:L), time, transformedMagYaw), grid, title("Inclination Z"), legend("Mag Yaw", "Rotated Mag Yaw")
-% figure(9)
+figure
+subplot(3, 1, 1), plot(time, Roll(1:L), "red", time, accelRoll(1:L), "green", time, gyroRoll(1:L), "blue"), legend("Roll", "Accel Roll", "Gyro Roll"), title("Roll"), grid
+subplot(3, 1, 2), plot(time, Pitch(1:L), "red", time, accelPitch(1:L), "green", time, gyroPitch(1:L), "blue"), legend("Pitch", "Accel Pitch", "Gyro Pitch"), title("Pitch"), grid
+subplot(3, 1, 3), plot(time, Yaw(1:L), "red", time, transformedMagYaw(1:L), "green", time, gyroYaw(1:L), "blue"), legend("Yaw", "Mag Yaw", "Gyro Yaw"), title("Yaw"), grid
+figure
+subplot(3, 1, 1), plot(time2, refAccel(1, 1:L2)), grid, title("Accel x in reference frame")
+subplot(3, 1, 2), plot(time2, refAccel(2, 1:L2)), grid, title("Accel y in reference frame")
+subplot(3, 1, 3), plot(time2, refAccel(3, 1:L2)), grid, title("Accel z in reference frame")
+figure
+subplot(3, 1, 1), plot(time, Roll(1:L)), grid, title("Roll")
+subplot(3, 1, 2), plot(time, Pitch(1:L)), grid, title("Pitch")
+subplot(3, 1, 3), plot(time, Yaw(1:L)), grid, title("Yaw")
+figure
+subplot(3, 1, 1), plot(time, gyroRoll(1:L)), grid, title("Gyro Roll"), legend("Gyro Roll")
+subplot(3, 1, 2), plot(time, gyroPitch(1:L)), grid, title("Gyro Pitch"), legend("Gyro Pitch")
+subplot(3, 1, 3), plot(time, gyroYaw(1:L)), grid, title("Gyro Yaw"), legend("Gyro Yaw")
+figure
+subplot(3, 1, 1), plot(time, accelRoll(1:L)), grid, title("Inclination X")
+subplot(3, 1, 2), plot(time, accelPitch(1:L)), grid, title("Inclination Y")
+subplot(3, 1, 3), plot(time, magYaw(1:L), time, transformedMagYaw), grid, title("Inclination Z"), legend("Mag Yaw", "Rotated Mag Yaw")
+% figure
 % subplot(1, 3, 1), plot(time, CFrotatedMagX(1:L)), grid, title("CF Rotated Magnetic Field X")
 % subplot(1, 3, 2), plot(time, CFrotatedMagY(1:L)), grid, title("CF Rotated Magnetic Field Y")
 % subplot(1, 3, 3), plot(time, CFrotatedMagZ(1:L)), grid, title("CF Rotated Magnetic Field Z")
-figure(7)
-subplot(1, 3, 1), plot(time, rotatedMagX(1:L)), grid, title("Rotated Magnetic Field X")
-subplot(1, 3, 2), plot(time, rotatedMagY(1:L)), grid, title("Rotated Magnetic Field Y")
-subplot(1, 3, 3), plot(time, rotatedMagZ(1:L)), grid, title("Rotated Magnetic Field Z")
-figure(3)
-subplot(1, 3, 1), plot(time, magX(1:L)), grid, title("Magnetic Field X")
-subplot(1, 3, 2), plot(time, magY(1:L)), grid, title("Magnetic Field Y")
-subplot(1, 3, 3), plot(time, magZ(1:L)), grid, title("Magnetic Field Z")
-figure(2)
+figure
+subplot(3, 1, 1), plot(time, rotatedMagX(1:L)), grid, title("Rotated Magnetic Field X")
+subplot(3, 1, 2), plot(time, rotatedMagY(1:L)), grid, title("Rotated Magnetic Field Y")
+subplot(3, 1, 3), plot(time, rotatedMagZ(1:L)), grid, title("Rotated Magnetic Field Z")
+figure
+subplot(3, 1, 1), plot(time, magX(1:L)), grid, title("Magnetic Field X")
+subplot(3, 1, 2), plot(time, magY(1:L)), grid, title("Magnetic Field Y")
+subplot(3, 1, 3), plot(time, magZ(1:L)), grid, title("Magnetic Field Z")
+figure
 subplot()
-subplot(1, 3, 1), plot(time, calibratedAngularX(1:L), "red"), grid, title("Angular Velocity X"), legend("GyroX")
-subplot(1, 3, 2), plot(time, calibratedAngularY(1:L), "red"), grid, title("Angular Velocity Y"), legend("GyroY")
-subplot(1, 3, 3), plot(time, calibratedAngularZ(1:L), "red"), grid, title("Angular Velocity Z"), legend("GyroZ")
-figure(1)
-subplot(1, 3, 1), plot(time, calibratedAccelX(1:L), time, filteredAccelX(1:L)), grid, title("Acceleration X"), legend("Calibrated", "Filtered")
-subplot(1, 3, 2), plot(time, calibratedAccelY(1:L), time, filteredAccelY(1:L)), grid, title("Acceleration Y"), legend("Calibrated", "Filtered")
-subplot(1, 3, 3), plot(time, calibratedAccelZ(1:L), time, filteredAccelZ(1:L)), grid, title("Acceleration Z"), legend("Calibrated", "Filtered")
+subplot(3, 1, 1), plot(time, calibratedAngularX(1:L), "red"), grid, title("Angular Velocity X"), legend("GyroX")
+subplot(3, 1, 2), plot(time, calibratedAngularY(1:L), "red"), grid, title("Angular Velocity Y"), legend("GyroY")
+subplot(3, 1, 3), plot(time, calibratedAngularZ(1:L), "red"), grid, title("Angular Velocity Z"), legend("GyroZ")
+figure
+subplot(3, 1, 1), plot(time, calibratedAccelX(1:L), time, filteredAccelX(1:L)), grid, title("Acceleration X"), legend("Calibrated", "Filtered")
+subplot(3, 1, 2), plot(time, calibratedAccelY(1:L), time, filteredAccelY(1:L)), grid, title("Acceleration Y"), legend("Calibrated", "Filtered")
+subplot(3, 1, 3), plot(time, calibratedAccelZ(1:L), time, filteredAccelZ(1:L)), grid, title("Acceleration Z"), legend("Calibrated", "Filtered")
+if TEST
+    subplot(3, 1, 1), plot(time, testRoll, time, Roll, time, errorRateRoll), grid, title('Roll Error Rate')
+    subplot(3, 1, 2), plot(time, testPitch, time, Pitch, time, errorRatePitch), grid, title('Pitch Error Rate')
+    subplot(3, 1, 3), plot(time, testYaw, time, Yaw, time, errorRateYaw), grid, title('Yaw Error Rate')
+end
