@@ -1,18 +1,24 @@
 close all
 format long
 %Flags
-TEST = 1;
+TEST_IDEAL = 0;
+TEST_IMU_MODEL= 1;
 POS_OBSERVER = 0;
 DO_CALIBRATION = 1;
-%transform data so we can process it
-if TEST == 0
+
+%Transform data so we can process it
+if TEST_IDEAL == 0 && TEST_IMU_MODEL == 0
     Accel = table2array(Acceleration);
     AngVel = table2array(AngularVelocity);
     MagField = table2array(MagneticField);
 end
-if TEST
+if TEST_IDEAL
     AHRS_Simulation_Data_Generation
 end
+if TEST_IMU_MODEL
+    IMU_Data_Simulation
+end
+
 
 accelX = Accel(:, 1);
 accelY = Accel(:, 2);
@@ -53,7 +59,7 @@ calibratedAngularZ = angularZ - CalibrationGz;
 %Define constants and time vector
 delta_T = 7e-3;
 L = length(angularX) - 1;
-if TEST
+if TEST_IDEAL || TEST_IMU_MODEL
    L = length(angularX);
 end
 time = 0 : delta_T : (L - 1) * delta_T;
@@ -196,6 +202,7 @@ R = Rz * Ry * Rx;
 %    bodyGravity = Rx * Ry * Rz * [0; 0; 9.81];
 bodyAccel = [filteredAccelX(i); filteredAccelY(i); filteredAccelZ(i)];% - bodyGravity;
 partialRefAccel = R * bodyAccel;
+
 %Calculate displacement w/ deadreackoning
 partialRefVelocity = partialRefVelocity + partialRefAccel * delta_T;
 partialRefPosistion = partialRefPosition + partialRefVelocity * delta_T;
@@ -212,13 +219,27 @@ refPosition(1, i) = partialRefPosition(1, 1);
 refPosition(2, i) = partialRefPosition(2, 1);
 refPosition(3, i) = partialRefPosition(3, 1);
 end
-if TEST
+
+%Calculate Error & Accuracy
+if TEST_IDEAL || TEST_IMU_MODEL
    testRoll = testRoll * rad2deg;
    testPitch = testPitch * rad2deg;
    testYaw = testYaw * rad2deg;
-   errorRateRoll = (-testRoll + Roll)./testRoll;
-   errorRatePitch= (-testPitch + Pitch)./testPitch;
-   errorRateYaw= (-testYaw + Yaw)./testYaw;
+   errorRateRoll = abs(((-testRoll + Roll)./testRoll) * 100);
+   errorRatePitch= abs(((-testPitch + Pitch)./testPitch) * 100);
+   errorRateYaw= abs(((-testYaw + Yaw)./testYaw) * 100);
+   for i = 1 : L
+       if testRoll(i) == 0 errorRateRoll(i) = 0; end
+       if testPitch(i) == 0 errorRatePitch(i) = 0; end
+       if testYaw(i) == 0 errorRateYaw(i) = 0; end
+       if errorRateRoll(i) > 100 errorRateRoll(i) = 100; end 
+       if errorRatePitch(i) > 100 errorRatePitch(i) = 100; end
+       if errorRateYaw(i) > 100 errorRateYaw(i) = 100; end
+   end
+   accuracy = zeros(L, 3);
+   accuracy(:, 1) = 100 - errorRateRoll;
+   accuracy(:, 2) = 100 - errorRatePitch;
+   accuracy(:, 3) = 100 - errorRateYaw;
 end
 
 %Plot the results
@@ -231,9 +252,9 @@ subplot(3, 1, 1), plot(time2, refAccel(1, 1:L2)), grid, title("Accel x in refere
 subplot(3, 1, 2), plot(time2, refAccel(2, 1:L2)), grid, title("Accel y in reference frame")
 subplot(3, 1, 3), plot(time2, refAccel(3, 1:L2)), grid, title("Accel z in reference frame")
 figure
-subplot(3, 1, 1), plot(time, Roll(1:L)), grid, title("Roll")
-subplot(3, 1, 2), plot(time, Pitch(1:L)), grid, title("Pitch")
-subplot(3, 1, 3), plot(time, Yaw(1:L)), grid, title("Yaw")
+subplot(3, 1, 1), plot(time, Roll(1:L), time, testRoll(1:L)), grid, title("Roll"), legend("Reconstructed Roll", "Ground Truth Roll")
+subplot(3, 1, 2), plot(time, Pitch(1:L), time, testPitch(1:L)), grid, title("Pitch"), legend("Reconstructed Pitch", "Ground Truth Pitch")
+subplot(3, 1, 3), plot(time, Yaw(1:L), time, testYaw(1:L)), grid, title("Yaw"), legend("Reconstructed Yaw", "Ground Truth Yaw")
 figure
 subplot(3, 1, 1), plot(time, gyroRoll(1:L)), grid, title("Gyro Roll"), legend("Gyro Roll")
 subplot(3, 1, 2), plot(time, gyroPitch(1:L)), grid, title("Gyro Pitch"), legend("Gyro Pitch")
@@ -263,8 +284,8 @@ figure
 subplot(3, 1, 1), plot(time, calibratedAccelX(1:L), time, filteredAccelX(1:L)), grid, title("Acceleration X"), legend("Calibrated", "Filtered")
 subplot(3, 1, 2), plot(time, calibratedAccelY(1:L), time, filteredAccelY(1:L)), grid, title("Acceleration Y"), legend("Calibrated", "Filtered")
 subplot(3, 1, 3), plot(time, calibratedAccelZ(1:L), time, filteredAccelZ(1:L)), grid, title("Acceleration Z"), legend("Calibrated", "Filtered")
-if TEST
-    subplot(3, 1, 1), plot(time, testRoll, time, Roll, time, errorRateRoll), grid, title('Roll Error Rate')
-    subplot(3, 1, 2), plot(time, testPitch, time, Pitch, time, errorRatePitch), grid, title('Pitch Error Rate')
-    subplot(3, 1, 3), plot(time, testYaw, time, Yaw, time, errorRateYaw), grid, title('Yaw Error Rate')
+if TEST_IDEAL || TEST_IMU_MODEL
+    subplot(3, 1, 1), plot(time, accuracy(:, 1)), grid, title('Roll Accuracy')
+    subplot(3, 1, 2), plot(time, accuracy(:, 2)), grid, title('Pitch Accuracy')
+    subplot(3, 1, 3), plot(time, accuracy(:, 3)), grid, title('Yaw Accuracy')
 end

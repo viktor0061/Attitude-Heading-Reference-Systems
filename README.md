@@ -90,5 +90,9 @@ Version 1.1.1<br>
 &ensp; -Resolves the time delay by changing the CF signs, temporarly.<br>
 Version 1.1.2<br>
 &ensp; -Implements the calculation of error rate, during test.<br>
-&ensp; -Makes changes to the visualization of data.<br>
+&ensp; -Makes changes to the visualization of data.<br><br>
+Version 1.2.0<br>
+&ensp; -Implements a IMU model from MathWorks Matlab Navigation Toolbox that uses the ground truth data, <br>
+&ensp; &ensp;generated in the previous version to generate synthetic sensor data based on given parameters.<br>
+&ensp; -Instead of determining the normalized value of error rate, the AHRS.m now calculates the accuracy in percentages.<br><br>
 
