@@ -71,7 +71,7 @@ Version 0.1.2<br>
 &ensp; -The current version is able to:<br>
  &ensp; &ensp; -Determine the Euler angles.<br>
 &ensp; -And is not able to:<br>
-&ensp; &ensp; -Determine tilt angles greater than 90 degrees because the nature of the gravity vector, used as reference.<br>
+&ensp; &ensp; -Determine tilt angles greater than 90 degrees because the nature of the gravity vector, used as reference.<br><br>
 Version 1.0.0<br>
 &ensp; -Implemented a feature which can calibrate the Z axis of the accelerometer.<br>
 &ensp; -Fixed an error in the eCompass equations - the denominators of the equations have been implemented in a way<br> 
@@ -80,14 +80,14 @@ Version 1.0.0<br>
 &ensp; -Removed the possible transformation of gyroscope data -It have been deemed unnecessary-.<br>
 &ensp; -Implemented a filter for accelerometer data, used to calculate position.<br>
 &ensp; -Implemented a function that transform the filtered accelerometer data and performm double integration.<br>
-&ensp; -Changes have been made in the visualization of the data.<br>
+&ensp; -Changes have been made in the visualization of the data.<br><br>
 Version 1.1.0<br>
 &ensp; -Added a module that simulates sensor data for the validation of the AHRS algorithm.<br>
-&ensp; -Implemented the said module to the AHRS algorithm.<br>
+&ensp; -Implemented the said module to the AHRS algorithm.<br><br>
 Version 1.1.1<br>
 &ensp; -The hotfix implements a calibration time in test data generation<br>
 &ensp; &ensp; and changes the frequency of the signal.<br>
-&ensp; -Resolves the time delay by changing the CF signs, temporarly.<br>
+&ensp; -Resolves the time delay by changing the CF signs, temporarly.<br><br>
 Version 1.1.2<br>
 &ensp; -Implements the calculation of error rate, during test.<br>
 &ensp; -Makes changes to the visualization of data.<br><br>
@@ -95,4 +95,9 @@ Version 1.2.0<br>
 &ensp; -Implements a IMU model from MathWorks Matlab Navigation Toolbox that uses the ground truth data, <br>
 &ensp; &ensp;generated in the previous version to generate synthetic sensor data based on given parameters.<br>
 &ensp; -Instead of determining the normalized value of error rate, the AHRS.m now calculates the accuracy in percentages.<br><br>
-
+Version 1.3.0<br>
+&ensp; -Replaced as much iterative processes, with built-in and matrix functions, as possible for improved speed.<br>
+&ensp; -Removed redundant code and formated it for better readability.<br>
+&ensp; -Merged the two functions of synthetic data generation<br>
+&ensp;&ensp;and removed duplicate code by using function calls. (Should do the same for Sensor Fusion as well).<br>
+&ensp; -Updated the flow charts in the documentation. (Will have to translate the conference paper to english).<br>
