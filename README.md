@@ -2,21 +2,21 @@
 This repository contains my algorithm based on the research I made in the field of AHRSs for my school project as an Electrical and Electronics Engineer(BSc) student at Subotica Tech - College of Applied Sciences with the support of prof. Dr. Silvester Pletl, and as part of my research as a scholarship student at ELTE Márton Áron Special College, and which research earned me a section first place at the 20th Hungarian Students Scientific Conference, in Vojvodina.<br><br>
 
 Hungarian<br>
-A kód október 8-ai állapotától kezdve történik a verziószámozás<br>
+A kód október 8-ai állapotától kezdve történik a verziószámozás<br><br>
 Version 0.0.0<br>
  &ensp; Az algoritmus a bevitt adatokból:<br>
    &ensp; &ensp; -Kalibrálja gyorsulásmérő X és Y tengelyeit és a giroszkóp X,Y,Z tengelyeit.<br>
    &ensp; &ensp; -Meghatározza a giroszkópból illetve a gyorsulásmérőből és magnetometerből számolt szögeket külön-külön,<br>
    &ensp; &ensp; &nbsp; majd elvégzi azok fúzióját, miután a magnetometer adatait a gyorsulásmérőből számolt Roll és Pitch<br>
    &ensp; &ensp; &nbsp; szögek segítségével az inerciarendszerből a referencia rendszerbe transzformálta.<br>
-   &ensp; &ensp; Ily módon meghatározza a test orientációját Euler szögekkel.<br>
+   &ensp; &ensp; Ily módon meghatározza a test orientációját Euler szögekkel.<br><br>
    
 Version 0.0.1<br>
  &ensp; -Javítsa a bugot ami miatt hamis adatokat adott a CF a beforgatott gyro adatokkal, <br>
- &ensp; &nbsp; radiánok és szögek közötti rossz átváltások miatt.<br>
+ &ensp; &nbsp; radiánok és szögek közötti rossz átváltások miatt.<br><br>
  
 Version 0.1.1<br>
-&ensp; -Implementálásra került egy funkció, ami folyamatossá teszi a magnetométerből számolt Yaw szöget.<br>
+&ensp; -Implementálásra került egy funkció, ami folyamatossá teszi a magnetométerből számolt Yaw szöget.<br><br>
 
 Version 0.1.2<br>
 &ensp; -A következő hibák kerültek javításra:<br>
@@ -25,7 +25,7 @@ Version 0.1.2<br>
 &ensp; -Az aktuális verzió képes:<br>
 &ensp; &ensp; -A három Euler szög meghatározására.<br>
 &ensp; -Nem képes:<br>
-&ensp; &ensp; -90 fokos vagy annál nagyobb szögeket mérni a Roll és Pitch tengelyek mentén a referenciának használt gravitáció vektor miatt.<br>
+&ensp; &ensp; -90 fokos vagy annál nagyobb szögeket mérni a Roll és Pitch tengelyek mentén a referenciának használt gravitáció vektor miatt.<br><br>
 Version 1.0.0<br>
 &ensp; -Implementálásra került egy módszer, amivel meghatározható a gyorsulásmérő Z - tengely menti offsetje.<br>
 &ensp; -Javításra került egy hiba, az eCompass egyenleteinek rossz implementálása miatt -a nevezőben nem jelentek meg a vektor összegek-.<br>
@@ -33,20 +33,20 @@ Version 1.0.0<br>
 &ensp; -Eltávolítottam a funkciót, ami a giroszkóp mérések adatait transzformálja rekúrzívan -szükségtelennek ítéltem-.<br>
 &ensp; -Implementálásra került egy szűrés a gyorsulás adatokon, amelyeket a pozíció számításhoz használ fel az algoritmus -dead reckoninggal-.<br>
 &ensp; -Továbbá bekerült egy funkció, amely a szűrt adatokat transzformálja REF/NED rendszerbe és kétszeresen integrálja.<br>
-&ensp; -Változtatások történtek továbbá az adatok megjelenítésénél is.<br>
+&ensp; -Változtatások történtek továbbá az adatok megjelenítésénél is.<br><br>
 Version 1.1.0<br>
 &ensp; -Hozzáadásra került egy modul, amely szenzor adatokat szimulál az AHRS algoritmus validálásának céljából.<br>
-&ensp; -Implementálásra került az említett modul az AHRS algoritmusba.<br>
+&ensp; -Implementálásra került az említett modul az AHRS algoritmusba.<br><br>
 Version 1.1.1<br>
 &ensp; -A hotfix kalibrációs időt ad hozzá a generált teszt adatokhoz és megváltoztatja azok frekvenciáját.<br>
-&ensp; -Továbbá, kijavítja a késést a becslésekben, a CF előjeleinek ideiglenes megváltoztatásával.<br>
+&ensp; -Továbbá, kijavítja a késést a becslésekben, a CF előjeleinek ideiglenes megváltoztatásával.<br><br>
 Version 1.1.2<br>
 &ensp; -Implementálja a hiba arányának meghatározását.<br>
 &ensp; -Változtatásokat eszközöl az adatok meggjelenítésében.<br>
 <br><br><br><br>
 
 English<br>
-Version control starts w/ 8th of October, 2021<br>
+Version control starts w/ 8th of October, 2021<br><br>
 Version 0.0.0<br>
  &ensp; The algorithm based on the input data:<br>
    &ensp; &ensp; -Calibrates the X and Y axles of the acceletormeter and the X,Y,Z axles of the gyroscope.<br>
@@ -55,23 +55,24 @@ Version 0.0.0<br>
    &ensp; &ensp; -Calculates heading/yaw from the transformed magnetometer data<br>
    &ensp; &ensp; -Performs sensorfusion on the filtered attitude and heading data<br>
    &ensp; &ensp; &nbsp; from the gyroscope, accelerometer & magnetometer data (Complementary Filter)<br>
-   &ensp; &ensp; -Thus provides attitude and heading information in Euler angles.<br>
+   &ensp; &ensp; -Thus provides attitude and heading information in Euler angles.<br><br>
    
 Version 0.0.1<br>
  &ensp; -Fixes a bug where the CF have given false data with the transformed gyroscope data<br>
- &ensp; &nbsp; due to the wrong use of degrees and radians.<br>
+ &ensp; &nbsp; due to the wrong use of degrees and radians.<br><br>
  
 Version 0.1.1<br>
-&ensp; -Implements a feature which makes the output of the magYaw continuous.<br>
+&ensp; -Implements a feature which makes the output of the magYaw continuous.<br><br>
 
 Version 0.1.2<br>
 &ensp; -The next bugs have been fixed:<br>
 &ensp; &ensp; -Wrong transformation of gyroscope data due to the wrong implementation of the transformation matrix.<br>
 &ensp; &ensp; -Delay in the Roll angle due to a wrong sign in the CF equations.<br>
 &ensp; -The current version is able to:<br>
- &ensp; &ensp; -Determine the Euler angles.<br>
+&ensp; &ensp; -Determine the Euler angles.<br>
 &ensp; -And is not able to:<br>
 &ensp; &ensp; -Determine tilt angles greater than 90 degrees because the nature of the gravity vector, used as reference.<br><br>
+
 Version 1.0.0<br>
 &ensp; -Implemented a feature which can calibrate the Z axis of the accelerometer.<br>
 &ensp; -Fixed an error in the eCompass equations - the denominators of the equations have been implemented in a way<br> 
@@ -81,23 +82,29 @@ Version 1.0.0<br>
 &ensp; -Implemented a filter for accelerometer data, used to calculate position.<br>
 &ensp; -Implemented a function that transform the filtered accelerometer data and performm double integration.<br>
 &ensp; -Changes have been made in the visualization of the data.<br><br>
+
 Version 1.1.0<br>
 &ensp; -Added a module that simulates sensor data for the validation of the AHRS algorithm.<br>
 &ensp; -Implemented the said module to the AHRS algorithm.<br><br>
+
 Version 1.1.1<br>
 &ensp; -The hotfix implements a calibration time in test data generation<br>
 &ensp; &ensp; and changes the frequency of the signal.<br>
 &ensp; -Resolves the time delay by changing the CF signs, temporarly.<br><br>
+
 Version 1.1.2<br>
 &ensp; -Implements the calculation of error rate, during test.<br>
 &ensp; -Makes changes to the visualization of data.<br><br>
+
 Version 1.2.0<br>
 &ensp; -Implements a IMU model from MathWorks Matlab Navigation Toolbox that uses the ground truth data, <br>
 &ensp; &ensp;generated in the previous version to generate synthetic sensor data based on given parameters.<br>
-&ensp; -Instead of determining the normalized value of error rate, the AHRS.m now calculates the accuracy in percentages.<br><br>
+&ensp; -Instead of determining the normalized value of error rate, the algorithm now calculates the accuracy in percentages.<br><br>
+
 Version 1.3.0<br>
 &ensp; -Replaced as much iterative processes, with built-in and matrix functions, as possible for improved speed.<br>
 &ensp; -Removed redundant code and formated it for better readability.<br>
 &ensp; -Merged the two functions of synthetic data generation<br>
 &ensp;&ensp;and removed duplicate code by using function calls. (Should do the same for Sensor Fusion as well).<br>
 &ensp; -Updated the flow charts in the documentation. (Will have to translate the conference paper to english).<br>
+&ensp; -Fixed a bug, introduced by trying to add a safety measure to flag declaration, that prevented the script from running<br><br>
